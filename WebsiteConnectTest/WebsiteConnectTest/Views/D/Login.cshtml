@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="Content/bootstrap.min.css" />
+    <script type="text/javascript" src="Scripts/jquery-3.4.1.min.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        function Login() {
+            var taiKhoan = $('#username').val();
+            var matKhau = $('#password').val();
+            // Gửi yêu cầu đăng nhập đến API
+            $.ajax({
+
+                type: 'POST',
+                url: 'https://localhost:44380/api/Account/Login',
+                data: JSON.stringify({ TaiKhoan: taiKhoan, MatKhau: matKhau }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    // Lưu thông tin tài khoản và token vào Local Storage để sử dụng cho các lần yêu cầu khác
+                    localStorage.setItem('userID', data.ID);
+                    localStorage.setItem('userToken', data.Token);
+
+                    // Chuyển hướng đến trang chủ hoặc trang được yêu cầu trước đó
+                    window.location.href = '/';
+                },
+                error: function (xhr, status, error) {
+                    alert('Lỗi đăng nhập: ' + xhr.responseText);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <form id="form-login">
+        <div>
+            <label for="username">Tài khoản:</label>
+            <input type="text" id="username" name="TaiKhoan" />
+        </div>
+        <div>
+            <label for="password">Mật khẩu:</label>
+            <input type="password" id="password" name="MatKhau" />
+        </div>
+        <button type="button" id="btn-login" onclick="Login()">Đăng nhập</button>
+        <div>
+            @Html.ActionLink("Register?", "Register")
+        </div>
+    </form>
+
+
+</body>
+</html>

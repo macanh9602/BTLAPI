@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Đăng ký tài khoản</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        label {
+            display: inline-block;
+            width: 150px;
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        input {
+            display: inline-block;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Đăng ký tài khoản</h1>
+    <form id="register-form">
+        <div>
+            <label for="TaiKhoan">Tài khoản:</label>
+            <input type="text" id="TaiKhoan" name="TaiKhoan">
+        </div>
+        <div>
+            <label for="MatKhau">Mật khẩu:</label>
+            <input type="password" id="MatKhau" name="MatKhau">
+        </div>
+        <div>
+            <label for="XacNhanMatKhau">Xác nhận mật khẩu:</label>
+            <input type="password" id="XacNhanMatKhau" name="XacNhanMatKhau">
+        </div>
+        <button type="submit">Đăng ký</button>
+        <div>
+            @Html.ActionLink("Back to Login", "Login")
+        </div>
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        $(document).ready(function () {
+            $('#register-form').submit(function (event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    url: 'https://localhost:44380/api/Account/Register',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        $('#message').text('Đăng ký tài khoản thành công!');
+                    },
+                    error: function (xhr) {
+                        $('#message').text(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

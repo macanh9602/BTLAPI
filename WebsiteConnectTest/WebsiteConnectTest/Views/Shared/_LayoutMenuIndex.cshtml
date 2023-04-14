@@ -1,0 +1,509 @@
+﻿
+<!DOCTYPE html>
+<html lang="zxx" class="no-js">
+
+<head>
+    <!-- Mobile Specific Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="~/Import/img/fav.png">
+    <!-- Author Meta -->
+    <meta name="author" content="CodePixar">
+    <!-- Meta Description -->
+    <meta name="description" content="">
+    <!-- Meta Keyword -->
+    <meta name="keywords" content="">
+    <!-- meta character set -->
+    <meta charset="UTF-8">
+    <!-- Site Title -->
+    <title>Karma Shop</title>
+
+    <!--
+            CSS
+            ============================================= -->
+    <link rel="stylesheet" href="~/Import/css/linearicons.css">
+    <link rel="stylesheet" href="~/Import/css/owl.carousel.css">
+    <link rel="stylesheet" href="~/Import/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/Import/css/themify-icons.css">
+    <link rel="stylesheet" href="~/Import/css/nice-select.css">
+    <link rel="stylesheet" href="~/Import/css/nouislider.min.css">
+    <link rel="stylesheet" href="~/Import/css/bootstrap.css">
+    <link rel="stylesheet" href="~/Import/css/main.css">
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            GetAllProducts();
+        });
+
+        function GetAllProducts() {
+            $.ajax({
+                url: 'https://localhost:44380/api/SanPham/',
+                method: 'GET',
+                contentType: 'json',
+                dataType: 'json',
+                error: function (response) {
+                },
+                success: function (reponse) {
+                    const len = reponse.length;
+                    console.log(reponse);
+                    let table = '';
+
+                    for (let i = 0; i < len; ++i) {
+                        const row = reponse[i];
+                        getHangSX(row.MaHangSX, function (HangSX) {
+                            table = table + '<tr>';
+                            table = table + '<td>' + row.MaSP + '</td>';
+                            table = table + '<td>' + row.TenSP + '</td>';
+                            table = table + '<td>' + row.MaMau + '</td>';
+                            table = table + '<td>' + row.Gia + '</td>';
+                            table = table + '<td>' + row.SoLuong + '</td>';
+                            table = table + '<td>' + row.MaHangSX + '</td>';
+                            table = table + '<td>' + HangSX + '</td>';
+                            table = table + '<td>' + row.ThoiGianBH + '</td>';
+                            table = table + '<td>' + row.GioiThieu + '</td>';
+                            table = table + '<td>' + row.MaAnh + '</td>';
+                            table = table + '<td>' + row.Anh + '</td>';
+                            table = table + '</tr>';
+                            document.getElementById('allSP').innerHTML = table;
+                        });
+                    }
+
+                },
+                fail: function (response) {
+                    alert(" không thành công");
+                },
+            });
+        }
+        function getHangSX(masx, callback) {
+            $.ajax({
+                url: 'https://localhost:44380/api/HangSX/SearchhsxByid/' + masx,
+                method: 'GET',
+                contentType: 'json',
+                dataType: 'json',
+                success: function (response) {
+                    callback(response[0].HangSX);
+                },
+                fail: function (response) { },
+            });
+        }
+    </script>
+    <script type="text/javascript">
+        //Hàm lấy Thêm mới san pham. Dùng $.ajax() thực hiện method HTTPPOST
+        function InsertProduct() {
+            var url = 'https://localhost:44380/api/SanPham/?MaSP=' +
+                $('input').eq(1).val() + '&TenSP=' + $('input').eq(2).val() + '&MaMau=' + $('input').eq(3).val() +
+                '&Gia=' + $('input').eq(4).val() + '&SoLuong=' + $('input').eq(5).val() + '&MaHangSX=' + $('input').eq(6).val() + '&ThoiGianBH=' + $('input').eq(7).val() +
+                '&GioiThieu=' + $('input').eq(8).val();
+            $.ajax({
+                url: url,
+                method: 'POST',
+                contentType: 'json',
+                dataType: 'json',
+                error: function (response) {
+                    alert("Thêm mới không thành công");
+
+                },
+                success: function (reponse) {
+                    alert("Thêm mới thành công");
+                    GetAllProducts();
+
+                }
+            });
+        }
+        
+    </script>
+    <script>
+        function DeleteDL(MaSP) {
+            var maDL = $('input').eq(9).val(); // Lấy mã đại lý từ input
+            if (maDL) { // Nếu mã đại lý không rỗng
+                $.ajax({
+                    url: 'https://localhost:44380/api/SanPham?MaSP=' +
+                        $('input').eq(9).val(),
+                    //url: 'https://localhost:44380/api/SanPham/' + maDL,
+                    type: 'DELETE',
+                    success: function (result) {
+                        if (result) {
+                            alert('Xóa san pham thành công!');
+                            GetAllProducts();
+                        }
+                        else {
+                            console.log('Không tìm thấy khách hàng để xóa');
+                        }
+                        
+                    },
+                    error: function (xhr, status, error) {
+                        alert(xhr.responseText);
+                    }
+                });
+            } else {
+                alert('Vui lòng nhập mã san pham cần xóa!');
+            }
+        }
+    </script>
+    <script>
+        function UpdateProduct() {
+            if ($('input').eq(1).val() && $('input').eq(2).val() && $('input').eq(3).val() && $('input').eq(4).val() && $('input').eq(5).val() && $('input').eq(6).val() && $('input').eq(7).val() && $('input').eq(8).val()) {
+                var url = 'https://localhost:44380/api/SanPham?MaSP=' +
+                    $('input').eq(1).val() + '&TenSP=' + $('input').eq(2).val() + '&MaMau=' + $('input').eq(3).val() +
+                    '&Gia=' + $('input').eq(4).val() + '&SoLuong=' + $('input').eq(5).val() + '&MaHangSX=' + $('input').eq(6).val() + '&ThoiGianBH=' + $('input').eq(7).val() +
+                    '&GioiThieu=' + $('input').eq(8).val();
+                var data = {
+                    MaSP: $('#txtMaSP').val(),
+                    TenSP: $('#txtTenKH').val(),
+                    MaMau: $('#txtMaMau').val(),
+                    Gia: $('#txtGia').val(),
+                    SoLuong: $('#txtSoLuong').val(),
+                    MaHangSX: $('#txtMaHSX').val(),
+                    ThoiGianBH: $('#txtTGBH').val(),
+                    GioiThieu: $('#txtGioiThieu').val()
+                };
+                $.ajax({
+                    url: url,
+                    method: 'PUT',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify(data),
+                    success: function () {
+                        alert('Cập nhật thông tin khách hàng thành công');
+                        GetAllCustomers(); //Gọi lại hàm lấy dữ liệu để cập nhật bảng hiển thị
+                    },
+                    error: function () {
+                        alert('Cập nhật thông tin khách hàng thất bại');
+                    }
+                });
+            }
+                else {
+                    alert("Vui long dien day du thong tin");
+                }
+
+
+            }
+    </script>
+
+
+</head>
+
+<body id="category">
+    @RenderBody()
+    <!-- Start Header Area -->
+    <header class="header_area sticky-header">
+        <div class="main_menu">
+            <nav class="navbar navbar-expand-lg navbar-light main_box">
+                <div class="container">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <a class="navbar-brand logo_h" href="index.html"><img src="~/Import/img/logo.png" alt=""></a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav menu_nav ml-auto">
+                            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                            <li class="nav-item submenu dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                                   aria-expanded="false">Shop</a>
+                                <ul class="dropdown-menu">
+                                    <li class="nav-item active"><a class="nav-link" href="category.html">Shop Category</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="single-product.html">Product Details</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="checkout.html">Product Checkout</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="cart.html">Shopping Cart</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="confirmation.html">Confirmation</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item submenu dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                                   aria-expanded="false">Blog</a>
+                                <ul class="dropdown-menu">
+                                    <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="single-blog.html">Blog Details</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item submenu dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                                   aria-expanded="false">Pages</a>
+                                <ul class="dropdown-menu">
+                                    <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="tracking.html">Tracking</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="elements.html">Elements</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="nav-item"><a href="#" class="cart"><span class="ti-bag"></span></a></li>
+                            <li class="nav-item">
+                                <button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="search_input" id="search_input_box">
+            <div class="container">
+                <form class="d-flex justify-content-between">
+                    <input type="text" class="form-control" id="search_input" placeholder="Search Here">
+                    <button type="submit" class="btn"></button>
+                    <span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
+                </form>
+            </div>
+        </div>
+    </header>
+    <!-- End Header Area -->
+    <!-- Start Banner Area -->
+    <section class="banner-area organic-breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h1>Shop Category page</h1>
+                    <nav class="d-flex align-items-center">
+                        <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="#">Shop<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="category.html">Fashon Category</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Banner Area -->
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-3 col-lg-4 col-md-5">
+                <div class="sidebar-categories">
+                    <div class="head">Edit</div>
+                    <div class="container">
+
+                        <table style="border:none">
+                            <tbody>
+                                <tr>
+                                    <td style="width:150px">Mã sản phẩm</td>
+                                    <td>
+                                        <input id="txtMaSP" type="text" name="MaSP"
+                                               placeholder="Mã sản phẩm" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:30px">Tên sản phẩm </td>
+                                    <td>
+                                        <input id="txtTenSP" type="text" name="TenKhach" placeholder="Tên sản phẩm" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Mã màu </td>
+                                    <td>
+                                        <input id="txtMaMau" type="text" name="DiaChiKhach"
+                                               placeholder="Mã màu" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Giá </td>
+                                    <td>
+                                        <input id="txtGia" type="text" name="DienThoaiKhach"
+                                               placeholder="Giá" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Số lượng </td>
+                                    <td>
+                                        <input id="txtSoLuong" type="text" name="DienThoaiKhach"
+                                               placeholder="Số lượng" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Mã hãng sản xuất </td>
+                                    <td>
+                                        <input id="txtMaHSX" type="text" name="DienThoaiKhach"
+                                               placeholder="Mã hãng sản xuất" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Thời gian bảo hành  </td>
+                                    <td>
+                                        <input id="txtTGBH" type="text" name="DienThoaiKhach"
+                                               placeholder="Thòi gian bảo hành" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Giới thiệu </td>
+                                    <td>
+                                        <input id="txtGioiThieu" type="text" name="DienThoaiKhach"
+                                               placeholder="Giới thiệu" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+
+                                        <button class="btn-primary update-button"
+                                                onclick="InsertProduct();">
+                                            Thêm mới
+                                        </button>
+                                        <button class="btn-primary update-button" onclick="UpdateProduct();">
+                                            Sửa
+                                        </button>
+                                        @*<button class="btn-primary update-button" onclick="deleteProduct();">
+                                Xóa
+                            </button>*@
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="container">
+                        <table style="border:none">
+                            <tbody>
+                                <tr>
+                                    <td style="width:150px">Mã sản phẩm: </td>
+                                    <td>
+                                        <input id="txtxoa" type="text" name="MaKhach"
+                                               placeholder="Mã sản phẩm " />
+                                    </td>
+                                </tr>
+                                <tr>
+
+                                    <td>
+                                        <button class="btn-primary update-button"
+                                                onclick="DeleteDL();">
+                                            Xóa
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="sidebar-filter mt-50">
+                    <div class="top-filter-head">Product Filters</div>
+                    <div class="common-filter">
+                        <div class="head">Brands</div>
+                        <form action="#">
+                            <ul>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="apple" name="brand"><label for="apple">Apple<span>(29)</span></label></li>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="asus" name="brand"><label for="asus">Asus<span>(29)</span></label></li>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="gionee" name="brand"><label for="gionee">Gionee<span>(19)</span></label></li>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="micromax" name="brand"><label for="micromax">Micromax<span>(19)</span></label></li>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="samsung" name="brand"><label for="samsung">Samsung<span>(19)</span></label></li>
+                            </ul>
+                        </form>
+                    </div>
+                    <div class="common-filter">
+                        <div class="head">Color</div>
+                        <form action="#">
+                            <ul>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="black" name="color"><label for="black">Black<span>(29)</span></label></li>
+                                <li class="filter-list">
+                                    <input class="pixel-radio" type="radio" id="balckleather" name="color"><label for="balckleather">
+                                        Black
+                                        Leather<span>(29)</span>
+                                    </label>
+                                </li>
+                                <li class="filter-list">
+                                    <input class="pixel-radio" type="radio" id="blackred" name="color"><label for="blackred">
+                                        Black
+                                        with red<span>(19)</span>
+                                    </label>
+                                </li>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="gold" name="color"><label for="gold">Gold<span>(19)</span></label></li>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="spacegrey" name="color"><label for="spacegrey">Spacegrey<span>(19)</span></label></li>
+                            </ul>
+                        </form>
+                    </div>
+                    <div class="common-filter">
+                        <div class="head">Price</div>
+                        <div class="price-range-area">
+                            <div id="price-range"></div>
+                            <div class="value-wrapper d-flex">
+                                <div class="price">Price:</div>
+                                <span>$</span>
+                                <div id="lower-value"></div>
+                                <div class="to">to</div>
+                                <span>$</span>
+                                <div id="upper-value"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-9 col-lg-8 col-md-7">
+                <!-- Start Filter Bar -->
+                <div class="filter-bar d-flex flex-wrap align-items-center">
+                    <div class="sorting">
+                        <select>
+                            <option value="1">Default sorting</option>
+                            <option value="1">Default sorting</option>
+                            <option value="1">Default sorting</option>
+                        </select>
+                    </div>
+                    <div class="sorting mr-auto">
+                        <select>
+                            <option value="1">Show 12</option>
+                            <option value="1">Show 12</option>
+                            <option value="1">Show 12</option>
+                        </select>
+                    </div>
+                    <div class="pagination">
+                        <a href="#" class="prev-arrow"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></a>
+                        <a href="#" class="active">1</a>
+                        <a href="#">2</a>
+                        <a href="#">3</a>
+                        <a href="#" class="dot-dot"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>
+                        <a href="#">6</a>
+                        <a href="#" class="next-arrow"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+                <!-- End Filter Bar -->
+                <!-- Start Best Seller -->
+                <section class="lattest-product-area pb-40 category-list">
+                    <div class="container">
+                        <table id="tDanhMucSP" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Mã sản phẩm</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Mã  màu</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Mã hãng sản xuất</th>
+                                    <th>Hãng sản xuất</th>
+                                    <th>Thời gian bảo hành</th>
+                                    <th>Giới thiệu</th>
+                                    <th>Mã ảnh</th>
+                                    <th>Ảnh</th>
+
+                                </tr>
+                            </thead>
+                            <tbody id="allSP"></tbody>
+                        </table>
+                    </div>
+                    
+                </section>
+               
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <script src="~/Import/js/vendor/jquery-2.2.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+            crossorigin="anonymous"></script>
+    <script src="~/Import/js/vendor/bootstrap.min.js"></script>
+    <script src="~/Import/js/jquery.ajaxchimp.min.js"></script>
+    <script src="~/Import/js/jquery.nice-select.min.js"></script>
+    <script src="~/Import/js/jquery.sticky.js"></script>
+    <script src="~/Import/js/nouislider.min.js"></script>
+    <script src="~/Import/js/jquery.magnific-popup.min.js"></script>
+    <script src="~/Import/js/owl.carousel.min.js"></script>
+    <!--gmaps Js-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
+    <script src="~/Import/js/gmaps.min.js"></script>
+    <script src="~/Import/js/main.js"></script>
+</body>
+
+</html>

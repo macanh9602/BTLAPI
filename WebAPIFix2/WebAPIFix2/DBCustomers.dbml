@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="DuLieu" Class="DBCustomersDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Table Name="dbo.tAnhSP" Member="tAnhSPs">
+    <Type Name="tAnhSP">
+      <Column Name="MaSP" Type="System.String" DbType="VarChar(50) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="TenFileAnh" Type="System.String" DbType="VarChar(100) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblAdmin" Member="tblAdmins">
+    <Type Name="tblAdmin">
+      <Column Name="ID_Admin" Type="System.String" DbType="VarChar(20) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Ten_Admin" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Association Name="tblAdmin_tblTaiKhoan" Member="tblTaiKhoans" ThisKey="ID_Admin" OtherKey="ID_Admin" Type="tblTaiKhoan" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblKhach" Member="tblKhaches">
+    <Type Name="tblKhach">
+      <Column Name="Makhach" Type="System.String" DbType="VarChar(20) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Tenkhach" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="Diachi" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="Dienthoai" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Association Name="tblKhach_tblTaiKhoan" Member="tblTaiKhoans" ThisKey="Makhach" OtherKey="Makhach" Type="tblTaiKhoan" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblTaiKhoan" Member="tblTaiKhoans">
+    <Type Name="tblTaiKhoan">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="TaiKhoan" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="MatKhau" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="Makhach" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="XacNhanMatKhau" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="ID_Admin" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Association Name="tblAdmin_tblTaiKhoan" Member="tblAdmin" ThisKey="ID_Admin" OtherKey="ID_Admin" Type="tblAdmin" IsForeignKey="true" />
+      <Association Name="tblKhach_tblTaiKhoan" Member="tblKhach" ThisKey="Makhach" OtherKey="Makhach" Type="tblKhach" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tDanhMucSP" Member="tDanhMucSPs">
+    <Type Name="tDanhMucSP">
+      <Column Name="MaSP" Type="System.String" DbType="VarChar(50) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="TenSP" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="MaMau" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Gia" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="SoLuong" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="MaHangSX" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="ThoiGianBH" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="GioiThieu" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="MaAnh" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Anh" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="tHangSX_tDanhMucSP" Member="tHangSX" ThisKey="MaHangSX" OtherKey="MaHangSX" Type="tHangSX" IsForeignKey="true" />
+      <Association Name="tMauSac_tDanhMucSP" Member="tMauSac" ThisKey="MaMau" OtherKey="MaMau" Type="tMauSac" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tHangSX" Member="tHangSXes">
+    <Type Name="tHangSX">
+      <Column Name="MaHangSX" Type="System.String" DbType="VarChar(50) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="HangSX" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="tHangSX_tDanhMucSP" Member="tDanhMucSPs" ThisKey="MaHangSX" OtherKey="MaHangSX" Type="tDanhMucSP" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tMauSac" Member="tMauSacs">
+    <Type Name="tMauSac">
+      <Column Name="MaMau" Type="System.String" DbType="VarChar(50) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="TenMau" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="tMauSac_tDanhMucSP" Member="tDanhMucSPs" ThisKey="MaMau" OtherKey="MaMau" Type="tDanhMucSP" />
+    </Type>
+  </Table>
+</Database>
